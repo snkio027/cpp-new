@@ -1,0 +1,65 @@
+# cpp-new
+
+A small personal tool for creating clean, modern C++ projects without repeating the same setup work.
+
+## Goal
+
+`cpp-new` should make this workflow pleasant:
+
+```bash
+cpp-new app robot-runtime
+cd robot-runtime
+cmake --workflow --preset dev
+```
+
+The generated project should be understandable without `cpp-new` and should use normal C++ tooling directly.
+
+## Design priorities
+
+1. Personal developer experience first.
+2. Small, readable implementation.
+3. Minimal generated files.
+4. No hidden host mutation.
+5. No build-system wrapper.
+6. No network requirement during project creation.
+7. Prefer boring, inspectable code over framework-heavy abstractions.
+
+## Initial scope
+
+Start with one canonical `app` template.
+
+After it is stable, add:
+
+```text
+lib
+header-only
+```
+
+Initial generated projects use:
+
+```text
+C++23
+Modern target-centric CMake
+CMake Presets / Workflow Presets
+Ninja
+clangd
+clang-format
+clang-tidy
+CTest
+ASan / UBSan where supported
+compile_commands.json
+```
+
+Dependency managers, C++26, Modules, ROS, CUDA, packaging, benchmarking and fuzzing are intentionally deferred.
+
+## Repository documents
+
+- `AGENTS.md` — rules for Codex and other coding agents.
+- `docs/architecture.md` — architecture and boundaries.
+- `docs/implementation-plan.md` — current implementation sequence.
+
+## Current authorized work
+
+Build and validate the canonical `app` project template first.
+
+Do **not** implement a general template framework before that artifact is proven.

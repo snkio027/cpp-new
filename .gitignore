@@ -1,0 +1,12 @@
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Local build / test output
+build/
+out/
+tmp/
+
+# Generated local artifacts
+*.log

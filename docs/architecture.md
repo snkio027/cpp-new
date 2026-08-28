@@ -1,0 +1,271 @@
+# cpp-new Architecture
+
+**Status:** Initial implementation baseline  
+**Purpose:** Personal Modern C++ project bootstrap
+
+## 1. Product definition
+
+`cpp-new` is a small offline scaffolder.
+
+Its job is:
+
+```text
+inputs
+  -> create a clean project tree
+  -> stop
+```
+
+The generated project then uses normal native tooling directly.
+
+`cpp-new` is not a build system, package manager, environment manager or project runtime.
+
+## 2. Desired UX
+
+Primary flow:
+
+```bash
+cpp-new app robot-runtime
+cd robot-runtime
+cmake --workflow --preset dev
+```
+
+Incremental development remains normal CMake/CTest:
+
+```bash
+cmake --build --preset dev
+ctest --preset dev
+```
+
+There should be no `cpp-new build` abstraction.
+
+## 3. Base generated project
+
+Production baseline:
+
+```text
+C++23
+target-centric CMake
+CMake Presets
+CMake Workflow Presets
+Ninja
+compile_commands.json
+clangd
+clang-format
+clang-tidy
+CTest
+warnings
+ASan / UBSan profile where supported
+```
+
+The project should remain compiler-neutral even though Clang tooling is the preferred development tooling.
+
+Expected compiler families over time:
+
+```text
+Clang
+GCC
+AppleClang
+MSVC
+```
+
+## 4. Build truth
+
+CMake owns build semantics.
+
+```text
+CMake target graph
+      |
+      v
+compile_commands.json
+      |
+      v
+clangd
+```
+
+`.clangd` may point clangd at the compilation database, but it must not duplicate include paths, defines, language mode or target flags that CMake already owns.
+
+Prefer target-local CMake configuration:
+
+```cmake
+target_compile_features(...)
+target_compile_options(...)
+target_include_directories(...)
+target_link_libraries(...)
+```
+
+Avoid directory-global build state when target-local configuration is sufficient.
+
+## 5. Template model
+
+The eventual base artifact types are:
+
+```text
+app
+lib
+header-only
+```
+
+They represent different artifact semantics, not cosmetic directory variants.
+
+Implementation order is intentionally:
+
+```text
+app
+ -> lib
+ -> header-only
+```
+
+Do not create a generic template framework first.
+
+### app
+
+A minimal executable project.
+
+It does not need a public `include/` directory by default.
+
+### lib
+
+A compiled library with public headers separated from implementation.
+
+Use a namespaced CMake alias such as:
+
+```text
+robot_core::robot_core
+```
+
+### header-only
+
+An interface library backed by public headers and tests.
+
+## 6. Dependency boundary
+
+The base project has:
+
+```text
+dependencies = none
+```
+
+This is intentional.
+
+vcpkg and Conan may be added later as explicit integrations.
+
+They are not base architecture.
+
+Domain-native dependency systems remain domain-native:
+
+```text
+ROS 2 -> package.xml / rosdep / ament
+vendor SDK -> vendor integration
+embedded -> cross/vendor toolchain
+```
+
+## 7. Side-effect boundary
+
+Normal project creation may only:
+
+```text
+create the destination tree
+write project files
+optionally run local `git init`
+```
+
+It must not:
+
+```text
+install tools
+modify shell files
+modify global Git configuration
+download templates
+clone dependencies
+query registries
+run generated code
+```
+
+Project creation must work offline.
+
+If the destination already exists and is non-empty, fail instead of merging or overwriting.
+
+## 8. Naming
+
+Initial project names use:
+
+```text
+[a-z][a-z0-9-]*
+```
+
+Example:
+
+```text
+robot-runtime
+```
+
+Canonical identifier:
+
+```text
+robot_runtime
+```
+
+Use the mapping consistently for CMake targets and C++ namespaces.
+
+Do not invent multiple independent naming conversions.
+
+## 9. Provenance
+
+Generated projects should contain a tiny metadata file such as:
+
+```text
+.cpp-new.toml
+```
+
+Its purpose is observability only.
+
+Example:
+
+```toml
+schema = 1
+template = "app"
+language = "c++23"
+```
+
+Normal builds must not depend on this file.
+
+No automatic project migration is planned for the initial product.
+
+## 10. What is intentionally deferred
+
+Do not include these in the first implementation:
+
+```text
+vcpkg
+Conan
+C++26
+C++ Modules
+ROS
+CUDA
+embedded profiles
+cross compilation profiles
+benchmarking
+fuzzing
+coverage systems
+packaging/publishing
+plugin architecture
+remote templates
+automatic migration
+```
+
+They can be reconsidered only after the base experience is proven.
+
+## 11. Architecture test
+
+A proposed feature should normally be rejected or deferred if it:
+
+- creates another source of build truth;
+- mutates the host;
+- requires the network for project creation;
+- makes every generated project larger for a niche use case;
+- turns `cpp-new` into a wrapper around CMake/CTest/package managers;
+- exists only for hypothetical future extensibility.
+
+The central rule is:
+
+> Generate a good native C++ project, then get out of the way.
