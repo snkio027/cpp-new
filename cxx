@@ -21,14 +21,14 @@ class GenerationError(Exception):
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(
-        prog="cpp-new",
+        prog="cxx",
         description="Create a clean, native C++ project.",
     )
     commands = parser.add_subparsers(dest="command", required=True)
 
-    app_parser = commands.add_parser("app", help="create an executable project")
-    app_parser.add_argument("name", help="project name: [a-z][a-z0-9-]*")
-    app_parser.add_argument(
+    init_parser = commands.add_parser("init", help="create an executable project")
+    init_parser.add_argument("name", help="project name: [a-z][a-z0-9-]*")
+    init_parser.add_argument(
         "--no-git",
         action="store_true",
         help="do not initialize a local Git repository",
@@ -100,7 +100,7 @@ def create_app(name, use_git):
     destination_was_empty = validate_destination(name, destination)
     identifier = name.replace("-", "_")
 
-    staging = Path(tempfile.mkdtemp(prefix=f".{name}.cpp-new-", dir=destination.parent))
+    staging = Path(tempfile.mkdtemp(prefix=f".{name}.cxx-", dir=destination.parent))
     try:
         shutil.copytree(
             fixture,
@@ -132,10 +132,10 @@ def main(argv=None):
     try:
         destination = create_app(args.name, use_git=not args.no_git)
     except (GenerationError, OSError) as error:
-        print(f"cpp-new: error: {error}", file=sys.stderr)
+        print(f"cxx: error: {error}", file=sys.stderr)
         return 1
 
-    print(f"Created app project at {destination}")
+    print(f"Created C++ project: {destination.name}")
     print()
     print("Next:")
     print(f"  cd {args.name}")
