@@ -1,11 +1,11 @@
-# cpp-new Architecture
+# cxx-init Architecture
 
 **Status:** Initial implementation baseline  
 **Purpose:** Personal Modern C++ project bootstrap
 
 ## 1. Product definition
 
-The `cpp-new` repository ships `cxx`, a small offline scaffolder.
+The `cxx-init` repository ships `cxx`, a small offline scaffolder.
 
 Its job is:
 
@@ -214,7 +214,7 @@ Do not invent multiple independent naming conversions.
 Generated projects should contain a tiny metadata file such as:
 
 ```text
-.cpp-new.toml
+.cxx.toml
 ```
 
 Its purpose is observability only.

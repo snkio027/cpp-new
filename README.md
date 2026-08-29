@@ -1,4 +1,4 @@
-# cpp-new
+# cxx-init
 
 A small personal tool for creating clean, modern C++ projects without repeating the same setup work.
 

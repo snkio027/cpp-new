@@ -2,7 +2,7 @@
 
 ## Mission
 
-Build `cpp-new` as a small personal developer-experience tool.
+Build `cxx-init` as a small personal developer-experience tool.
 
 Optimize for:
 
@@ -28,7 +28,7 @@ If code and architecture conflict, stop and surface the conflict. Do not silentl
 
 Do not:
 
-- create `cpp build`, `cpp test`, `cpp run`, or similar wrappers;
+- create `cxx build`, `cxx test`, `cxx run`, or similar wrappers;
 - replace CMake with another build system;
 - hard-code vcpkg or Conan into the base project;
 - install host tools;

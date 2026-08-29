@@ -51,7 +51,7 @@ class CxxTests(unittest.TestCase):
             self.assertIn("project(sensor_hub LANGUAGES CXX)", (project / "CMakeLists.txt").read_text())
             self.assertIn("Hello from sensor-hub!", (project / "src" / "main.cpp").read_text())
             self.assertEqual(
-                (project / ".cpp-new.toml").read_text(),
+                (project / ".cxx.toml").read_text(),
                 'schema = 1\ntemplate = "app"\nlanguage = "c++23"\n',
             )
 

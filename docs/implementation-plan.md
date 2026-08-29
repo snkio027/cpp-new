@@ -28,7 +28,7 @@ CMakePresets.json
 .clang-format
 .clang-tidy
 .gitignore
-.cpp-new.toml
+.cxx.toml
 src/main.cpp
 tests/
 cmake/
