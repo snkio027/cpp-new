@@ -1,0 +1,103 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "dev",
+      "displayName": "Development",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/dev",
+      "cacheVariables": {
+        "BUILD_TESTING": true,
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_OSX_SYSROOT": "macosx"
+      }
+    },
+    {
+      "name": "san",
+      "displayName": "Sanitizers",
+      "inherits": "dev",
+      "binaryDir": "${sourceDir}/build/san",
+      "cacheVariables": {
+        "ENABLE_SANITIZERS": true
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "dev",
+      "configurePreset": "dev"
+    },
+    {
+      "name": "san",
+      "configurePreset": "san"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "dev",
+      "configurePreset": "dev",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "san",
+      "configurePreset": "san",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "dev",
+      "displayName": "Development workflow",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "dev"
+        },
+        {
+          "type": "build",
+          "name": "dev"
+        },
+        {
+          "type": "test",
+          "name": "dev"
+        }
+      ]
+    },
+    {
+      "name": "san",
+      "displayName": "Sanitizer workflow",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "san"
+        },
+        {
+          "type": "build",
+          "name": "san"
+        },
+        {
+          "type": "test",
+          "name": "san"
+        }
+      ]
+    }
+  ]
+}

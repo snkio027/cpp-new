@@ -1,0 +1,10 @@
+---
+Checks: >
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  performance-*,
+  portability-*
+WarningsAsErrors: ''
+FormatStyle: file
+...
