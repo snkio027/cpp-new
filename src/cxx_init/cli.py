@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import argparse
 import re
 import shutil
@@ -13,6 +11,7 @@ NAME_PATTERN = re.compile(r"[a-z][a-z0-9-]*\Z")
 FIXTURE_NAME = "robot-runtime"
 FIXTURE_IDENTIFIER = "robot_runtime"
 LOCAL_FIXTURE_ENTRIES = ("build", "CMakeUserPresets.json", ".DS_Store", ".idea", ".vscode")
+VERSION = "0.1.0"
 
 
 class GenerationError(Exception):
@@ -24,6 +23,7 @@ def parse_args(argv):
         prog="cxx",
         description="Create a clean, native C++ project.",
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
     commands = parser.add_subparsers(dest="command", required=True)
 
     init_parser = commands.add_parser("init", help="create an executable project")
