@@ -63,23 +63,34 @@ If not, defer it.
 
 ## Current scope
 
-The first milestone is only the canonical `app` template.
+The current milestone packages the proven `cxx init` workflow for a `0.1.0` release.
 
-It must successfully run:
+It may add only:
 
-```bash
-cmake --workflow --preset dev
+```text
+standard Python package metadata
+MIT license
+src-layout package
+bundled canonical fixture
+cxx --version
+wheel and source distribution
+installed-wheel end-to-end verification
+installation documentation
 ```
 
-and, where supported:
+The release gate is:
 
-```bash
-cmake --workflow --preset san
+```text
+build wheel
+install wheel into an isolated tool environment
+cxx init
+configure
+build
+test
 ```
 
-Only after the `app` template is stable should generator code be built around it.
-
-Then add `lib`, followed by `header-only`.
+Do not upload to PyPI, create release credentials or add release automation in the packaging PR.
+Do not add `lib`, `header-only`, Homebrew, standalone binaries, self-update or auto-versioning.
 
 ## Implementation freedom
 

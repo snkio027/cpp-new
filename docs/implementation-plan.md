@@ -91,27 +91,37 @@ Optional:
 
 Nothing else is required.
 
-## Milestone 3 — End-to-end verification
+Generator tests must cover invalid names, unsafe or occupied destinations, missing fixture data and
+failure cleanup. A failed generation must not overwrite existing user files.
 
-Test the generated artifact:
+## Milestone 3 — Packaging and v0.1.0
+
+Package the proven generator as a standard pure-Python distribution:
 
 ```text
-generate
+PyPI package: cxx-init
+CLI command:  cxx
+version:      0.1.0
+runtime deps: none
+```
+
+The wheel must bundle the canonical fixture under the Python module. Add `cxx --version`, an MIT
+license and installation documentation without changing generator behavior.
+
+Required release validation:
+
+```text
+uv build
+ -> install the built wheel into an isolated tool environment
+ -> cxx --version
+ -> cxx init release-smoke
  -> configure
  -> build
  -> test
 ```
 
-Also test failure cases:
-
-```text
-invalid name
-non-empty destination
-unsafe path
-missing bundled template resource
-```
-
-A failed generation must not overwrite existing user files.
+The first packaging change stops after the installed-wheel gate passes. PyPI project creation,
+Trusted Publishing and the GitHub release workflow require a separate approved step.
 
 ## Milestone 4 — Add library template
 
@@ -159,6 +169,8 @@ C++26, Modules, ROS and CUDA remain separate decisions.
 The project is successful when:
 
 ```bash
+uv tool install cxx-init
+cxx --version
 cxx init demo
 cd demo
 cmake --workflow --preset dev

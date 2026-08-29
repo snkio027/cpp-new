@@ -1,18 +1,19 @@
 import json
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-CXX = REPOSITORY_ROOT / "cxx"
+CLI = REPOSITORY_ROOT / "src" / "cxx_init" / "cli.py"
 
 
-def run_cxx(working_directory, *arguments, executable=CXX):
+def run_cxx(working_directory, *arguments, executable=CLI):
     return subprocess.run(
-        [str(executable), *arguments],
+        [sys.executable, str(executable), *arguments],
         cwd=working_directory,
         check=False,
         capture_output=True,
@@ -21,6 +22,13 @@ def run_cxx(working_directory, *arguments, executable=CXX):
 
 
 class CxxTests(unittest.TestCase):
+    def test_reports_version(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            result = run_cxx(Path(temporary_directory), "--version")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout, "cxx 0.1.0\n")
+
     def test_rejects_the_previous_app_command(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             workspace = Path(temporary_directory)
@@ -136,9 +144,8 @@ class CxxTests(unittest.TestCase):
     def test_reports_a_missing_bundled_fixture_without_creating_a_destination(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             workspace = Path(temporary_directory)
-            isolated_executable = workspace / "cxx"
-            shutil.copy2(CXX, isolated_executable)
-            isolated_executable.chmod(0o755)
+            isolated_executable = workspace / "cli.py"
+            shutil.copy2(CLI, isolated_executable)
 
             result = run_cxx(workspace, "init", "demo", executable=isolated_executable)
 

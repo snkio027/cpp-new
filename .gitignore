@@ -12,5 +12,7 @@ tmp/
 *.log
 
 # Python
+.venv/
 __pycache__/
 *.py[cod]
+dist/

@@ -185,7 +185,26 @@ Project creation must work offline.
 
 If the destination already exists and is non-empty, fail instead of merging or overwriting.
 
-## 8. Naming
+## 8. Distribution boundary
+
+`cxx` is distributed as a standard pure-Python package named `cxx-init`.
+
+```text
+wheel / source distribution
+        -> isolated tool installation
+        -> cxx executable
+        -> bundled canonical fixture
+```
+
+Runtime dependencies remain empty. `uv_build` is a build dependency only.
+
+The wheel must contain the canonical fixture so project creation remains offline after installation.
+Network access belongs to installation and upgrade, never to `cxx init`.
+
+The initial distribution does not include standalone binaries, Homebrew packaging, an installer
+script, self-update or automatic version management.
+
+## 9. Naming
 
 Initial project names use:
 
@@ -209,7 +228,7 @@ Use the mapping consistently for CMake targets and C++ namespaces.
 
 Do not invent multiple independent naming conversions.
 
-## 9. Provenance
+## 10. Provenance
 
 Generated projects should contain a tiny metadata file such as:
 
@@ -231,7 +250,7 @@ Normal builds must not depend on this file.
 
 No automatic project migration is planned for the initial product.
 
-## 10. What is intentionally deferred
+## 11. What is intentionally deferred
 
 Do not include these in the first implementation:
 
@@ -255,7 +274,7 @@ automatic migration
 
 They can be reconsidered only after the base experience is proven.
 
-## 11. Architecture test
+## 12. Architecture test
 
 A proposed feature should normally be rejected or deferred if it:
 
