@@ -10,3 +10,7 @@ tmp/
 
 # Generated local artifacts
 *.log
+
+# Python
+__pycache__/
+*.py[cod]
