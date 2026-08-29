@@ -58,8 +58,13 @@ Dependency managers, C++26, Modules, ROS, CUDA, packaging, benchmarking and fuzz
 - `docs/architecture.md` — architecture and boundaries.
 - `docs/implementation-plan.md` — current implementation sequence.
 
-## Current authorized work
+## Current implementation
 
-Build and validate the canonical `app` project template first.
+The canonical `app` project is available through the minimal generator:
 
-Do **not** implement a general template framework before that artifact is proven.
+```bash
+./cpp-new app robot-runtime
+```
+
+The generator directly instantiates the proven fixture. It does not provide a general template
+framework, build commands or dependency management.
