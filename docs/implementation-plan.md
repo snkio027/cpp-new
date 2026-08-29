@@ -80,7 +80,7 @@ Prefer simple token replacement over a template framework.
 Required command:
 
 ```bash
-cpp-new app <name>
+cxx init <name>
 ```
 
 Optional:
@@ -117,11 +117,8 @@ A failed generation must not overwrite existing user files.
 
 Only after the app flow is stable.
 
-Add:
-
-```bash
-cpp-new lib <name>
-```
+The command shape for creating a library is intentionally undecided until real usage demonstrates
+the need.
 
 The library must have real library semantics:
 
@@ -136,11 +133,7 @@ Do not redesign the generator unless the library exposes a concrete problem in t
 
 ## Milestone 5 — Add header-only template
 
-Add:
-
-```bash
-cpp-new header-only <name>
-```
+The command shape for creating a header-only library is also intentionally undecided.
 
 Use CMake interface-library semantics.
 
@@ -163,10 +156,10 @@ C++26, Modules, ROS and CUDA remain separate decisions.
 
 ## v0.1 Definition of Done
 
-`cpp-new` is successful when:
+The project is successful when:
 
 ```bash
-cpp-new app demo
+cxx init demo
 cd demo
 cmake --workflow --preset dev
 ```

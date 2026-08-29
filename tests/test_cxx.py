@@ -7,10 +7,10 @@ from pathlib import Path
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-CPP_NEW = REPOSITORY_ROOT / "cpp-new"
+CXX = REPOSITORY_ROOT / "cxx"
 
 
-def run_cpp_new(working_directory, *arguments, executable=CPP_NEW):
+def run_cxx(working_directory, *arguments, executable=CXX):
     return subprocess.run(
         [str(executable), *arguments],
         cwd=working_directory,
@@ -20,14 +20,31 @@ def run_cpp_new(working_directory, *arguments, executable=CPP_NEW):
     )
 
 
-class CppNewTests(unittest.TestCase):
+class CxxTests(unittest.TestCase):
+    def test_rejects_the_previous_app_command(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            workspace = Path(temporary_directory)
+
+            result = run_cxx(workspace, "app", "demo", "--no-git")
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("invalid choice: 'app'", result.stderr)
+            self.assertFalse((workspace / "demo").exists())
+
     def test_generates_app_with_replaced_name_and_identifier(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             workspace = Path(temporary_directory)
 
-            result = run_cpp_new(workspace, "app", "sensor-hub", "--no-git")
+            result = run_cxx(workspace, "init", "sensor-hub", "--no-git")
 
             self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(
+                result.stdout,
+                "Created C++ project: sensor-hub\n\n"
+                "Next:\n"
+                "  cd sensor-hub\n"
+                "  cmake --workflow --preset dev\n",
+            )
             project = workspace / "sensor-hub"
             self.assertTrue((project / "CMakeLists.txt").is_file())
             self.assertFalse((project / ".git").exists())
@@ -50,7 +67,7 @@ class CppNewTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             workspace = Path(temporary_directory)
 
-            result = run_cpp_new(workspace, "app", "demo")
+            result = run_cxx(workspace, "init", "demo")
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue((workspace / "demo" / ".git").is_dir())
@@ -60,7 +77,7 @@ class CppNewTests(unittest.TestCase):
             workspace = Path(temporary_directory)
             (workspace / "demo").mkdir()
 
-            result = run_cpp_new(workspace, "app", "demo", "--no-git")
+            result = run_cxx(workspace, "init", "demo", "--no-git")
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue((workspace / "demo" / "CMakeLists.txt").is_file())
@@ -72,7 +89,7 @@ class CppNewTests(unittest.TestCase):
             with self.subTest(name=invalid_name), tempfile.TemporaryDirectory() as temporary_directory:
                 workspace = Path(temporary_directory)
 
-                result = run_cpp_new(workspace, "app", invalid_name, "--no-git")
+                result = run_cxx(workspace, "init", invalid_name, "--no-git")
 
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("invalid project name", result.stderr)
@@ -86,7 +103,7 @@ class CppNewTests(unittest.TestCase):
             sentinel = destination / "keep.txt"
             sentinel.write_text("keep\n")
 
-            result = run_cpp_new(workspace, "app", "demo", "--no-git")
+            result = run_cxx(workspace, "init", "demo", "--no-git")
 
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(sentinel.read_text(), "keep\n")
@@ -98,7 +115,7 @@ class CppNewTests(unittest.TestCase):
             destination = workspace / "demo"
             destination.write_text("keep\n")
 
-            result = run_cpp_new(workspace, "app", "demo", "--no-git")
+            result = run_cxx(workspace, "init", "demo", "--no-git")
 
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(destination.read_text(), "keep\n")
@@ -110,7 +127,7 @@ class CppNewTests(unittest.TestCase):
             target.mkdir()
             (workspace / "demo").symlink_to(target, target_is_directory=True)
 
-            result = run_cpp_new(workspace, "app", "demo", "--no-git")
+            result = run_cxx(workspace, "init", "demo", "--no-git")
 
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("symbolic link", result.stderr)
@@ -119,11 +136,11 @@ class CppNewTests(unittest.TestCase):
     def test_reports_a_missing_bundled_fixture_without_creating_a_destination(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             workspace = Path(temporary_directory)
-            isolated_executable = workspace / "cpp-new"
-            shutil.copy2(CPP_NEW, isolated_executable)
+            isolated_executable = workspace / "cxx"
+            shutil.copy2(CXX, isolated_executable)
             isolated_executable.chmod(0o755)
 
-            result = run_cpp_new(workspace, "app", "demo", executable=isolated_executable)
+            result = run_cxx(workspace, "init", "demo", executable=isolated_executable)
 
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("bundled app fixture is missing", result.stderr)
@@ -132,7 +149,7 @@ class CppNewTests(unittest.TestCase):
     def test_generated_app_configures_builds_and_tests(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             workspace = Path(temporary_directory)
-            generation = run_cpp_new(workspace, "app", "e2e-demo", "--no-git")
+            generation = run_cxx(workspace, "init", "e2e-demo", "--no-git")
             self.assertEqual(generation.returncode, 0, generation.stderr)
 
             project = workspace / "e2e-demo"

@@ -5,7 +5,7 @@
 
 ## 1. Product definition
 
-`cpp-new` is a small offline scaffolder.
+The `cpp-new` repository ships `cxx`, a small offline scaffolder.
 
 Its job is:
 
@@ -17,14 +17,14 @@ inputs
 
 The generated project then uses normal native tooling directly.
 
-`cpp-new` is not a build system, package manager, environment manager or project runtime.
+`cxx` is not a build system, package manager, environment manager or project runtime.
 
 ## 2. Desired UX
 
 Primary flow:
 
 ```bash
-cpp-new app robot-runtime
+cxx init robot-runtime
 cd robot-runtime
 cmake --workflow --preset dev
 ```
@@ -36,7 +36,7 @@ cmake --build --preset dev
 ctest --preset dev
 ```
 
-There should be no `cpp-new build` abstraction.
+There should be no `cxx build` abstraction.
 
 ## 3. Base generated project
 
@@ -263,7 +263,7 @@ A proposed feature should normally be rejected or deferred if it:
 - mutates the host;
 - requires the network for project creation;
 - makes every generated project larger for a niche use case;
-- turns `cpp-new` into a wrapper around CMake/CTest/package managers;
+- turns `cxx` into a wrapper around CMake/CTest/package managers;
 - exists only for hypothetical future extensibility.
 
 The central rule is:
